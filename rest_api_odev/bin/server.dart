@@ -7,7 +7,6 @@ import 'package:shelf_router/shelf_router.dart';
 void main() async {
   final router = Router();
 
-
   router.get('/api/add-two', (Request request) {
     final num1 = num.tryParse(request.url.queryParameters['num1'] ?? '');
     final num2 = num.tryParse(request.url.queryParameters['num2'] ?? '');
@@ -20,6 +19,30 @@ void main() async {
     }
 
     final result = num1 + num2;
+
+    return Response.ok(
+      json.encode({'result': result}),
+      headers: {'Content-Type': 'application/json'},
+    );
+  });
+
+  router.post('/api/multiply', (Request request) async {
+    final payload = await request.readAsString();
+    final data = json.decode(payload);
+
+    final numbers = List<num>.from(data['numbers']);
+
+    if (numbers.isEmpty) {
+      return Response.badRequest(
+        body: json.encode({'error': 'No numbers provided'}),
+        headers: {'Content-Type': 'application/json'},
+      );
+    }
+
+    num result = numbers[0];
+    for (var i = 1; i < numbers.length; i++) {
+      result *= numbers[i];
+    }
 
     return Response.ok(
       json.encode({'result': result}),
