@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+    ports:
+      - "13:13"
+    volumes:
+      - ./bin:/app/bin
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
